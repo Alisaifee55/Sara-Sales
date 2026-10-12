@@ -1,0 +1,14 @@
+{
+  "name": "Sales Comparison",
+  "short_name": "Sales Compare",
+  "description": "Compare shop sales across two periods and generate a formatted Excel report (.xlsx or .xls).",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0E5C6B",
+  "icons": [
+    { "src": "logo-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "logo-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
