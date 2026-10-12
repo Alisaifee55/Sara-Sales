@@ -248,25 +248,55 @@
   }
   #announce-wrap.open{display:flex;}
   .announce-card{
-    background:var(--card);border-radius:var(--radius);max-width:440px;width:100%;
-    padding:28px 26px 24px;position:relative;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.4);
+    position:relative;max-width:420px;width:100%;border-radius:14px;padding:26px 24px 22px;overflow:hidden;
+    background:linear-gradient(160deg,#0E5C6B,#0A3F4B 70%);color:#FBF5E9;
+    box-shadow:0 24px 64px rgba(0,0,0,.45);animation:annIn .9s cubic-bezier(.2,.8,.2,1) both;
   }
-  .announce-card::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--terracotta);}
-  .announce-card::after{content:"";position:absolute;top:0;left:0;width:96px;height:5px;background:var(--sea-deep);}
+  @keyframes annIn{from{opacity:0;transform:translateY(24px) scale(.96);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+  .announce-card::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--sun);z-index:2;}
+  .announce-card::after{content:"";position:absolute;top:0;left:0;width:96px;height:5px;background:var(--terracotta);z-index:2;}
+  .announce-card > *{position:relative;z-index:1;}
+  .announce-glow{
+    position:absolute !important;left:-40px;top:-50px;width:240px;height:240px;border-radius:50%;z-index:0 !important;
+    background:radial-gradient(circle,rgba(244,183,64,.55),transparent 65%);animation:annBreath 3.2s ease-in-out infinite;
+  }
+  @keyframes annBreath{0%,100%{transform:scale(.9);opacity:.6}50%{transform:scale(1.15);opacity:1}}
+  .announce-cell{
+    position:absolute !important;width:14px;height:10px;border:1.5px solid rgba(251,245,233,.35);border-radius:2px;
+    bottom:-20px;z-index:0 !important;animation:annFloat linear infinite;pointer-events:none;
+  }
+  @keyframes annFloat{to{transform:translateY(-560px) rotate(25deg);opacity:0}}
   .announce-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;}
-  .announce-icon{
-    width:46px;height:46px;border-radius:12px;background:var(--sea-light);color:var(--sea-deep);
-    display:inline-flex;align-items:center;justify-content:center;flex:none;
-  }
-  .announce-icon svg{width:26px;height:26px;fill:currentColor;}
+  .announce-logobox{background:#fff;border-radius:14px;padding:8px 12px;display:inline-flex;animation:annLogo .9s .3s cubic-bezier(.2,.9,.3,1.1) both;}
+  @keyframes annLogo{from{opacity:0;transform:scale(.5) rotate(-8deg)}to{opacity:1;transform:none}}
+  .announce-logobox img{height:52px;width:auto;display:block;}
   .announce-pill{
-    background:var(--terracotta);color:#fff;font-size:11px;font-weight:700;letter-spacing:.1em;
+    background:var(--sun);color:#16302F;font-size:11px;font-weight:700;letter-spacing:.1em;
     text-transform:uppercase;padding:5px 11px;border-radius:999px;
   }
-  .announce-card h2{margin:0 0 10px;font-size:21px;color:var(--sea-deep);letter-spacing:-.01em;}
-  .announce-card p{margin:0 0 10px;font-size:13.5px;line-height:1.55;color:var(--ink);}
-  .announce-card .announce-note{font-size:11.5px;color:var(--ink-soft);margin:14px 0 18px;}
-  .announce-card .btn{width:100%;}
+  .announce-good{
+    display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:14px;color:#16302F;
+    background:var(--sun);padding:7px 12px;border-radius:8px;margin:0 0 12px;overflow:hidden;
+    animation:annSlide .8s .8s cubic-bezier(.2,.9,.3,1.1) both;
+  }
+  @keyframes annSlide{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:none}}
+  .announce-good svg{width:17px;height:17px;fill:currentColor;flex:none;}
+  .announce-good::after{
+    content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.85),transparent);transform:skewX(-18deg);
+    animation:annShine 2.8s 1.6s ease-in-out infinite;
+  }
+  @keyframes annShine{0%{left:-60%}55%,100%{left:130%}}
+  .announce-card h2{margin:0 0 10px;font-size:22px;line-height:1.2;color:#FBF5E9;letter-spacing:-.01em;}
+  .announce-card h2 .w{display:inline-block;margin-right:.28em;opacity:0;animation:annBlur .7s calc(1s + var(--i)*.14s) ease-out forwards;}
+  @keyframes annBlur{from{opacity:0;filter:blur(10px);transform:translateY(8px)}to{opacity:1;filter:none;transform:none}}
+  .announce-card p{margin:0 0 18px;font-size:13.5px;line-height:1.55;color:#DCEFF1;opacity:0;animation:annBlur .8s 1.9s forwards;}
+  .announce-card .btn{width:100%;background:var(--sun);color:#16302F;opacity:0;animation:annBlur .6s 2.2s forwards;}
+  .announce-card .btn:hover{background:#FFC95A;}
+  @media (prefers-reduced-motion:reduce){
+    .announce-card,.announce-card *,.announce-card::before,.announce-card::after{animation:none !important;opacity:1 !important;transform:none !important;filter:none !important;}
+    .announce-glow,.announce-cell{display:none !important;}
+  }
 </style>
 </head>
 <body>
@@ -420,17 +450,18 @@
 
 <!-- v5.0 start-up notice: Excel 97 (.xls) support — shown until 30 Nov 2026 (see ANNOUNCE_UNTIL in the script) -->
 <div id="announce-wrap" role="dialog" aria-modal="true" aria-labelledby="announce-title">
-  <div class="announce-card">
+  <div class="announce-card" id="announce-card">
+    <span class="announce-glow"></span>
     <div class="announce-top">
-      <span class="announce-icon">
-        <svg viewBox="0 0 24 24" fill-rule="evenodd"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7zM8 11h8v2H8zm0 4h8v2H8z"/></svg>
-      </span>
+      <span class="announce-logobox"><img src="logo-192.png" alt="Sara logo"></span>
       <span class="announce-pill">New in v5.0</span>
     </div>
-    <h2 id="announce-title">Excel 97 (.xls) is now supported</h2>
-    <p>Old-format <b>.xls</b> files can now be uploaded as the Old or New period file &mdash; no need to re-save them as .xlsx first.</p>
-    <p>When you upload an .xls file, your report is also created as an <b>.xls</b> file that opens in Excel 97 and newer. You can switch this any time under <b>Report format</b>.</p>
-    <p class="announce-note">This notice appears at start-up until 30 Nov 2026.</p>
+    <div class="announce-good">
+      <svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>
+      Good News team SARA
+    </div>
+    <h2 id="announce-title"><span class="w" style="--i:0">Excel</span><span class="w" style="--i:1">97</span><span class="w" style="--i:2">(.xls)</span><span class="w" style="--i:3">is</span><span class="w" style="--i:4">now</span><span class="w" style="--i:5">supported</span></h2>
+    <p>Old-format <b>.xls</b> files can now be uploaded as the Old or New period file &mdash; no need to arrange the .xlsx !!!</p>
     <button type="button" class="btn btn-primary" id="announce-ok">Got it</button>
   </div>
 </div>
@@ -824,6 +855,15 @@ const announceWrap = document.getElementById('announce-wrap');
 let announceAfter = null;
 function openAnnouncement(after) {
   announceAfter = after || null;
+  const card = document.getElementById('announce-card');
+  card.querySelectorAll('.announce-cell').forEach(c => c.remove());
+  for (let i = 0; i < 14; i++) {
+    const c = document.createElement('i');
+    c.className = 'announce-cell';
+    c.style.cssText = 'left:' + Math.round(Math.random() * 96) + '%;animation-duration:' + (7 + Math.random() * 7).toFixed(1) +
+      's;animation-delay:-' + (Math.random() * 9).toFixed(1) + 's;opacity:' + (0.35 + Math.random() * 0.5).toFixed(2);
+    card.appendChild(c);
+  }
   announceWrap.classList.add('open');
   document.getElementById('announce-ok').focus();
 }
