@@ -7,8 +7,8 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="logo-192.png">
 <link rel="apple-touch-icon" href="logo-192.png">
-<title>Shop Sales Comparison Tool · v6.2</title>
-<meta name="app-version" content="6.2">
+<title>Shop Sales Comparison Tool · v6.3</title>
+<meta name="app-version" content="6.3">
 <script src="vendor/exceljs.min.js"></script>
 <script src="vendor/xlsx.full.min.js"></script>
 <script src="xls-writer.js"></script>
@@ -369,6 +369,24 @@
   .ds-eye .sl{display:none;} .ds-eye.on .sl{display:block;} .ds-eye.on{color:var(--sea-deep);}
   .fr{font-size:.52em;opacity:.55;font-weight:inherit;}
   .ostripe{display:inline-block;width:14px;height:26px;vertical-align:middle;margin-right:10px;border:1px solid var(--line);border-radius:3px;background:linear-gradient(#C8202F 0 33.3%,#fff 33.3% 66.6%,#0B6B3F 66.6%);}
+  .card.ds-weeks::before{background:var(--terracotta);}
+  .ds-wk4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px;}
+  .ds-wk{position:relative;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 10px 12px;}
+  .ds-wk.cur{border:2px solid var(--terracotta);padding:9px 9px 11px;}
+  .ds-wk.fut{opacity:.55;}
+  .ds-wk .k{font-size:10.5px;font-weight:700;color:var(--ink-soft);letter-spacing:.03em;}
+  .ds-wk .bar{height:8px;border-radius:4px;background:#E3EAEC;overflow:hidden;margin:8px 0 6px;}
+  .ds-wk .bar i{display:block;height:100%;border-radius:4px;background:var(--sea);transition:width .5s;}
+  .ds-wk .pc{font-size:18px;font-weight:800;color:var(--sea-deep);}
+  .ds-wk .sm{font-size:10.5px;color:var(--ink-soft);margin-top:2px;}
+  .ds-wk .tg{position:absolute;top:-9px;left:8px;background:var(--terracotta);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:7px;letter-spacing:.04em;}
+  .ds-wk .st{position:absolute;top:8px;right:8px;}
+  .ds-wk.hit{background:var(--sea-deep);border-color:var(--sea-deep);padding-bottom:26px;}
+  .ds-wk.hit .k,.ds-wk.hit .sm{color:#CDE6EA;} .ds-wk.hit .pc{color:#fff;}
+  .ds-wk.hit .bar{background:rgba(255,255,255,.28);} .ds-wk.hit .bar i{background:#fff;}
+  .ds-wk .rb{display:none;}
+  .ds-wk.hit .rb{display:block;position:absolute;left:0;right:0;bottom:0;background:#F4B740;color:#16302F;font-size:9.5px;font-weight:800;text-align:center;padding:3px 0;border-radius:0 0 8px 8px;letter-spacing:.06em;}
+  @media (max-width:520px){.ds-wk4{gap:6px;}.ds-wk{padding:8px 6px 10px;}.ds-wk .pc{font-size:14px;}.ds-wk .sm{font-size:9px;}.ds-wk .k{font-size:9px;}}
   /* Celebration */
   #ds-cele{position:fixed;inset:0;z-index:1200;display:none;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,rgba(14,92,107,.82),rgba(10,35,30,.92));cursor:pointer;}
   #ds-cele.open{display:flex;animation:celeIn .4s ease-out both;}
@@ -407,7 +425,7 @@
     </div>
     <div class="version-badge">
       <svg viewBox="0 0 24 24"><path d="M12 2 1 21h22L12 2z"/></svg>
-      v6.2
+      v6.3
     </div>
   </header>
 
@@ -601,6 +619,12 @@
         <div class="status" id="ds-status"></div>
       </div>
 
+      <div class="card ds-weeks">
+        <h2><svg class="icon-sm" viewBox="0 0 24 24"><path d="M3 3h2v18H3zm4 10h2v8H7zm4-6h2v14h-2zm4 4h2v10h-2zm4-8h2v18h-2z"/></svg>Weekly target <span id="ds-wk-month" style="font-weight:600;color:var(--ink-soft);"></span></h2>
+        <p class="sub">Each week's target is the sum of its daily targets. Progress counts the sales posted so far.</p>
+        <div class="ds-wk4" id="ds-wk4"></div>
+      </div>
+
       <div class="card ds-hist">
         <h2><svg class="icon-sm" viewBox="0 0 24 24"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2zm12 8v10H5V10z"/></svg>Last 30 days</h2>
         <p class="sub">Newest first. Tap <b>Edit</b> to change a day while its edit window is open.</p>
@@ -644,7 +668,7 @@
   <footer>
     <div class="copyright">
       <div class="copyright-main">&copy; 2026 AliAsgar. All rights reserved.</div>
-      <div class="copyright-sub">Shop Sales Comparison &middot; Version 6.2</div>
+      <div class="copyright-sub">Shop Sales Comparison &middot; Version 6.3</div>
     </div>
   </footer>
 
@@ -728,7 +752,7 @@ let lastGeneratedSignature = null;
 let lastGeneratedPreviewData = null;
 
 // ---- v5.0: Excel 97 support + start-up notice ----
-const APP_VERSION = '6.2';
+const APP_VERSION = '6.3';
 const ANNOUNCE_UNTIL = 20261130;              // yyyymmdd, inclusive — compared with the device's local date
 const FORMAT_STORAGE_KEY = 'sscOutputFormat';
 let outputPref = 'auto';                      // 'auto' (match upload) | 'xlsx' | 'xls'
@@ -2175,7 +2199,7 @@ document.getElementById('single-file-btn').addEventListener('click', async () =>
   const nowMs = () => Date.now() + skew;
   const fmt = (n, d) => (n == null || isNaN(n)) ? '' : Number(n).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
   // percentages: always 2 decimals; the fraction is small + faded. trunc=true never shows 100.00% for a day that is below target
-  const pctS = (v, trunc) => { if (v == null || isNaN(v)) return null; const x = v * 100, r = trunc && v < 1 ? Math.floor(x * 100 + 1e-7) / 100 : Math.round(x * 100) / 100, s = r.toFixed(2), i = s.indexOf('.'); return [s.slice(0, i), s.slice(i)]; };
+  const pctS = (v, trunc) => { if (v == null || isNaN(v)) return null; const x = v * 100, r0 = Math.round(x * 100) / 100, r = trunc && v < 1 && r0 >= 100 ? 99.99 : r0, s = r.toFixed(2), i = s.indexOf('.'); return [s.slice(0, i), s.slice(i)]; };
   const pctH = (v, trunc) => { const p = pctS(v, trunc); return p ? p[0] + '<span class="fr">' + p[1] + '</span>%' : ''; };
   const timeLbl = (ms) => new Date(ms).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Dubai' });
   const dayOf = (ds) => S.days.find((d) => d.date === ds);
@@ -2258,6 +2282,33 @@ document.getElementById('single-file-btn').addEventListener('click', async () =>
     else say('ds-banner', 'Locked &mdash; the ' + S.editMinutes + '-minute edit window is over. Contact admin to change this day.', 'error');
   }
 
+  // weeks: W1 = day 1-7; the extra days of the month go to W2, then W3, then W4  (28d 7/7/7/7 · 29d 7/8/7/7 · 30d 7/8/8/7 · 31d 7/8/8/8)
+  function weeksFor(ds, live) {
+    const ser = S.series && S.series[ds.slice(0, 7)]; if (!ser) return null;
+    const dom = +ds.slice(8), ex = ser.length - 28, ls = [7, 7 + (ex >= 1 ? 1 : 0), 7 + (ex >= 2 ? 1 : 0), 7 + (ex >= 3 ? 1 : 0)];
+    let s = 1;
+    return ls.map((l, i) => {
+      const from = s, to = s + l - 1; s += l; let tg = 0, sl = 0, anyT = false;
+      for (let d = from; d <= to; d++) { const e = ser[d - 1]; if (e[1] != null) { tg += e[1]; anyT = true; } const v = (d === dom && live != null) ? live : e[0]; if (d <= dom && v != null) sl += v; }
+      const target = anyT ? tg : null, ach = target ? sl / target : null;
+      return { no: i + 1, from, to, target, sales: sl, ach, state: dom > to ? 'past' : dom < from ? 'future' : 'now', hit: ach != null && ach >= 1 };
+    });
+  }
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const STAR = '<svg class="st" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,1.5 15.2,8.3 22.6,9.2 17.1,14.3 18.6,21.7 12,18 5.4,21.7 6.9,14.3 1.4,9.2 8.8,8.3" fill="#F4B740" stroke="#C98A12" stroke-width="1"/></svg>';
+  function renderWeeks() {
+    if (!S || !curDate) return;
+    const f = val('ds-total'), w = weeksFor(curDate, dirty && f != null && !isNaN(f) ? f : undefined), dp = S.shop.dp, box = $('ds-wk4');
+    if (!w) { box.innerHTML = ''; return; }
+    $('ds-wk-month').textContent = '· ' + MON[+curDate.slice(5, 7) - 1] + ' ' + curDate.slice(0, 4);
+    box.innerHTML = w.map((k) => '<div class="ds-wk' + (k.state === 'now' ? ' cur' : '') + (k.state === 'future' ? ' fut' : '') + (k.hit ? ' hit' : '') + '">' +
+      (k.state === 'now' ? '<span class="tg">THIS WEEK</span>' : '') + (k.hit ? STAR : '') +
+      '<div class="k">W' + k.no + ' · ' + k.from + '–' + k.to + '</div><div class="bar"><i style="width:' + (k.state === 'future' ? 0 : Math.min(100, (k.ach || 0) * 100)) + '%"></i></div>' +
+      '<div class="pc">' + (k.ach != null && k.state !== 'future' ? pctH(k.ach, true) : '–') + '</div>' +
+      '<div class="sm">' + (k.target == null ? 'no target' : k.state === 'future' ? fmt(k.target, dp) + ' target' : fmt(k.sales, dp) + ' of ' + fmt(k.target, dp)) + '</div>' +
+      (k.hit ? '<div class="rb">ACHIEVED</div>' : '') + '</div>').join('');
+  }
+
   const val = (id) => { const s = $(id).value.trim(); return s === '' ? null : Number(s); };
   const readForm = () => ({ total: val('ds-total'), pos1: val('ds-pos1'), pos2: val('ds-pos2'), others: val('ds-others'), qty: val('ds-qty'), inv: val('ds-inv') });
 
@@ -2273,6 +2324,7 @@ document.getElementById('single-file-btn').addEventListener('click', async () =>
     $('ds-s-tgt').textContent = tgt ? fmt(tgt, dp) : 'not set'; $('ds-s-ach').innerHTML = ach != null ? pctH(ach, true) : '–';
     $('ds-s-ipc').textContent = ok && f.inv ? fmt(f.qty / f.inv, 1) : '–'; $('ds-s-atv').textContent = ok && f.inv ? fmt(t / f.inv, dp) : '–'; $('ds-s-asp').textContent = ok && f.qty ? fmt(t / f.qty, dp) : '–';
     $('ds-side').classList.toggle('win', ach != null && ach >= 1);
+    renderWeeks();
   }
 
   function renderTable() {
@@ -2309,7 +2361,8 @@ document.getElementById('single-file-btn').addEventListener('click', async () =>
       skew = r.serverNow - Date.now();
       const i = S.days.findIndex((d) => d.date === r.day.date); if (i >= 0) S.days[i] = r.day;
       try { localStorage.setItem(CACHE_KEY, JSON.stringify({ state: S, skew })); } catch (e) {}
-      busy = false; dirty = false; updateLock(); renderTable();
+      const sr = S.series && S.series[r.day.date.slice(0, 7)]; if (sr) sr[+r.day.date.slice(8) - 1] = [r.day.total, r.day.target != null ? r.day.target : sr[+r.day.date.slice(8) - 1][1]];
+      busy = false; dirty = false; updateLock(); renderTable(); renderWeeks();
       imgDay = r.day; imgCanvas = drawReport(r.day); imgCanvas.toBlob(resolveB, 'image/png');
       showImage(copyP ? 'pending' : 'manual');
       if (copyP) copyP.then(() => say('ds-img-status', '✔ Image copied &mdash; open WhatsApp and paste it.', 'success')).catch(() => say('ds-img-status', 'Tap <b>Copy image</b>, then paste in WhatsApp.', 'info'));
@@ -2323,7 +2376,10 @@ document.getElementById('single-file-btn').addEventListener('click', async () =>
   const T = (x, s, px, py, font, col, al) => { x.font = font; x.fillStyle = col; x.textAlign = al || 'left'; x.textBaseline = 'middle'; x.fillText(String(s), px, py); };
   const rr = (x, px, py, w, h, r, fill, stroke, lw) => { x.beginPath(); if (x.roundRect) x.roundRect(px, py, w, h, r); else x.rect(px, py, w, h); if (fill) { x.fillStyle = fill; x.fill(); } if (stroke) { x.strokeStyle = stroke; x.lineWidth = lw || 1; x.stroke(); } };
   const star = (x, cx, cy, r, fill) => { x.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, q = i % 2 ? r * .45 : r; x.lineTo(cx + Math.cos(a) * q, cy + Math.sin(a) * q); } x.closePath(); x.fillStyle = fill; x.fill(); };
-  const P = { main: '#0E5C6B', mid: '#1C8296', accent: '#E2603A', accentDk: '#B5462A', light: '#DCEFF1', sand: '#FBF5E9', tint: '#F1E7D2', line: '#DCD2BC' };
+  const PAL = {
+    UAE:  { main: '#0E5C6B', mid: '#1C8296', accent: '#E2603A', accentDk: '#B5462A', light: '#DCEFF1', sand: '#FBF5E9', tint: '#F1E7D2', line: '#DCD2BC' },
+    OMAN: { main: '#0A5F4E', mid: '#1F8A72', accent: '#E2603A', accentDk: '#B5462A', light: '#DCEFE6', sand: '#F5F6E8', tint: '#EEEAD0', line: '#D6D6B8' }
+  };
   const INK = '#16302F', SOFT = '#4C6663', GOLD = '#F4B740', GREEN = '#1c9b4a';
 
   function drawPct(x, v, px, py, size, col, al, trunc) {      // 72 + small faded .06 + %   (py = vertical centre)
@@ -2338,11 +2394,11 @@ document.getElementById('single-file-btn').addEventListener('click', async () =>
   }
 
   function drawReport(m) {
-    const sh = S.shop, dp = sh.dp, ok = m.ach != null && m.ach >= 1, a = m.ach, off = ok ? 36 : 0, K = 3, W = 600, H = 446 + off;
+    const sh = S.shop, dp = sh.dp, P = PAL[sh.country] || PAL.UAE, ok = m.ach != null && m.ach >= 1, a = m.ach, off = ok ? 36 : 0, K = 3, W = 600, wk = weeksFor(m.date), H = 446 + (wk ? 118 : 0) + off;
     const time = m.updatedLabel || timeLbl(nowMs());
     const c = document.createElement('canvas'); c.width = W * K; c.height = H * K; const x = c.getContext('2d'); x.scale(K, K);
     x.fillStyle = P.sand; x.fillRect(0, 0, W, H); rr(x, 10, 10, W - 20, H - 20, 16, null, ok ? GOLD : P.line, ok ? 4 : 2);
-    if (ok) { x.fillStyle = GOLD; x.fillRect(12, 12, W - 24, 32); star(x, W / 2 - 100, 28, 9, INK); star(x, W / 2 + 100, 28, 9, INK); T(x, 'TARGET ACHIEVED', W / 2, 28, F('bold', 15), INK, 'center'); x.translate(0, off); }
+    if (ok) { x.save(); x.beginPath(); if (x.roundRect) x.roundRect(12, 12, W - 24, H - 24, 14); else x.rect(12, 12, W - 24, H - 24); x.clip(); x.fillStyle = GOLD; x.fillRect(12, 12, W - 24, 32); x.restore(); star(x, W / 2 - 100, 28, 9, INK); star(x, W / 2 + 100, 28, 9, INK); T(x, 'TARGET ACHIEVED', W / 2, 28, F('bold', 15), INK, 'center'); x.translate(0, off); }
     if (sh.country === 'OMAN') {                // Oman: name sits in a white cell with a red / white / green stripe block on its left
       const nm = sh.name.toUpperCase(); x.font = F('bold', 24); const cw0 = 14 + 14 + x.measureText(nm).width + 16;
       T(x, 'SARA · DAILY SALES', 30, 33, F('bold', 11), P.accentDk);
@@ -2370,7 +2426,31 @@ document.getElementById('single-file-btn').addEventListener('click', async () =>
     const mini = (px, py, w, lab, v) => { rr(x, px, py, w, 60, 10, P.tint); T(x, lab, px + 12, py + 18, F('bold', 10), SOFT); T(x, v, px + 12, py + 42, F('bold', 17), INK); };
     const w3 = (W - 60 - 20) / 3; [[sh.pos1Label + ' POS', fmt(m.pos1, dp)], [sh.pos2Label + ' POS', fmt(m.pos2, dp)], ['OTHERS', fmt(m.others, dp)]].forEach((r, i) => mini(30 + i * (w3 + 10), 278, w3, r[0], r[1]));
     const w5 = (W - 60 - 40) / 5; [['QTY', fmt(m.qty, 0)], ['INVOICES', fmt(m.inv, 0)], ['IPC', fmt(m.ipc, 1)], ['ATV', fmt(m.atv, dp)], ['ASP', fmt(m.asp, dp)]].forEach((r, i) => { const px = 30 + i * (w5 + 10); rr(x, px, 350, w5, 56, 10, P.light); T(x, r[0], px + 10, 368, F('bold', 9), P.mid); T(x, r[1], px + 10, 390, F('bold', 15), P.main); });
+    if (wk) drawWeeks(x, W, 424, wk, P, dp, m.date);
     return c;
+  }
+
+  // weekly strip: all weeks same bar colour; current week has a tag + coloured border; achieved week = solid card + star + ribbon
+  function drawWeeks(x, W, y, wk, P, dp, ds) {
+    T(x, 'WEEKLY TARGET · ' + MON[+ds.slice(5, 7) - 1].toUpperCase() + ' ' + ds.slice(0, 4), 30, y + 4, F('bold', 10), SOFT);
+    const gap = 8, cw = (W - 60 - 3 * gap) / 4, ch = 86;
+    wk.forEach((k, i) => {
+      const px = 30 + i * (cw + gap), py = y + 24, hit = k.hit, fut = k.state === 'future';
+      x.globalAlpha = fut ? .55 : 1;
+      rr(x, px, py, cw, ch, 8, hit ? P.main : '#fff', k.state === 'now' ? P.accent : (hit ? P.main : P.line), k.state === 'now' ? 2 : 1);
+      T(x, 'W' + k.no + ' · ' + k.from + '–' + k.to, px + 10, py + 14, F('bold', 10), hit ? '#CDE6EA' : SOFT);
+      rr(x, px + 10, py + 24, cw - 20, 8, 4, hit ? 'rgba(255,255,255,.28)' : '#E3EAEC');
+      if (k.ach != null && !fut) rr(x, px + 10, py + 24, Math.max(8, (cw - 20) * Math.min(k.ach, 1)), 8, 4, hit ? '#fff' : P.mid);
+      if (k.ach != null && !fut) drawPct(x, k.ach, px + 10, py + 45, 16, hit ? '#fff' : P.main, 'left', true); else T(x, '–', px + 10, py + 45, F('bold', 16), SOFT);
+      T(x, k.target == null ? 'no target' : fut ? fmt(k.target, dp) + ' target' : fmt(k.sales, dp) + ' of ' + fmt(k.target, dp), px + 10, py + 63, F('', 9), hit ? '#CDE6EA' : SOFT);
+      if (hit) {
+        star(x, px + cw - 16, py + 14, 8, GOLD);
+        x.save(); x.beginPath(); if (x.roundRect) x.roundRect(px, py, cw, ch, 8); else x.rect(px, py, cw, ch); x.clip(); x.fillStyle = GOLD; x.fillRect(px, py + ch - 15, cw, 15); x.restore();
+        T(x, 'ACHIEVED', px + cw / 2, py + ch - 7.5, F('bold', 9), INK, 'center');
+      }
+      x.globalAlpha = 1;
+      if (k.state === 'now') { rr(x, px + 8, py - 6, 58, 12, 6, P.accent); T(x, 'THIS WEEK', px + 37, py, F('bold', 8), '#fff', 'center'); }
+    });
   }
 
   // ---------------------------------------------------------------- image window: copy + download only
